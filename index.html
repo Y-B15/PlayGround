@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#05070f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Rocket Rivals — Mobile Car Soccer</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="game"></canvas>
+    <div class="vignette"></div>
+
+    <!-- ================= HUD ================= -->
+    <div id="hud" class="hidden">
+      <div class="scorebar">
+        <div class="team-pill blue">
+          <span class="team-tag">BLUE</span>
+          <span class="score" id="blueScore">0</span>
+        </div>
+        <div class="clock-wrap">
+          <div class="clock" id="timer">3:00</div>
+          <div class="overtime hidden" id="overtime">OVERTIME</div>
+        </div>
+        <div class="team-pill orange">
+          <span class="score" id="orangeScore">0</span>
+          <span class="team-tag">ORANGE</span>
+        </div>
+      </div>
+
+      <button id="pauseBtn" aria-label="Pause">❚❚</button>
+      <button id="muteBtn" class="mini-btn" aria-label="Mute">🔊</button>
+
+      <div id="countdown" class="countdown"></div>
+      <div id="goalBanner" class="goal-banner"></div>
+      <div id="feed" class="feed"></div>
+
+      <div class="boost-hud">
+        <div class="boost-label">BOOST</div>
+        <div class="boost-bar"><div id="boostFill"></div></div>
+        <div class="speed" id="speed">0 <small>KM/H</small></div>
+      </div>
+
+      <div class="touch-layer">
+        <div id="stick" class="stick">
+          <div class="stick-ring"></div>
+          <div id="stickKnob" class="stick-knob"></div>
+          <div class="stick-hint">DRIVE</div>
+        </div>
+        <div class="action-cluster">
+          <button id="camBtn" class="round-btn cam">CAM</button>
+          <button id="jumpBtn" class="round-btn jump"><span>JUMP</span></button>
+          <button id="boostBtn" class="round-btn boost">
+            <span class="bolt">⚡</span><span class="btn-label">BOOST</span>
+            <span class="boost-ring"></span>
+          </button>
+        </div>
+      </div>
+      <div id="desktopHint" class="desktop-hint">WASD / ARROWS drive &nbsp;·&nbsp; SPACE jump &nbsp;·&nbsp; SHIFT boost &nbsp;·&nbsp; C camera</div>
+    </div>
+
+    <!-- ================= MAIN MENU ================= -->
+    <div id="menu" class="overlay menu-overlay">
+      <div class="menu-inner">
+        <div class="brand">
+          <div class="brand-kicker">MOBILE CAR SOCCER</div>
+          <h1 class="brand-title"><span class="t-blue">ROCKET</span><span class="t-orange">RIVALS</span></h1>
+          <div class="brand-sub">SCORE. DEFEND. FLY.</div>
+        </div>
+
+        <div class="menu-panel">
+          <div class="setting">
+            <div class="setting-label">MATCH TYPE</div>
+            <div class="seg" id="modeSeg">
+              <button data-value="1v1" class="active">1 v 1</button>
+              <button data-value="2v2">2 v 2</button>
+            </div>
+          </div>
+          <div class="setting">
+            <div class="setting-label">BOT DIFFICULTY</div>
+            <div class="seg" id="diffSeg">
+              <button data-value="rookie">ROOKIE</button>
+              <button data-value="pro" class="active">PRO</button>
+              <button data-value="allstar">ALL-STAR</button>
+            </div>
+          </div>
+          <div class="setting">
+            <div class="setting-label">MATCH LENGTH</div>
+            <div class="seg" id="timeSeg">
+              <button data-value="120">2 MIN</button>
+              <button data-value="180" class="active">3 MIN</button>
+              <button data-value="300">5 MIN</button>
+            </div>
+          </div>
+
+          <button id="playBtn" class="play-btn">
+            <span class="play-icon">▶</span> PLAY
+          </button>
+
+          <div class="menu-foot">
+            <span class="pill-tip">🏆 First to the most goals wins</span>
+            <span class="pill-tip">🤖 Bots fill your team</span>
+          </div>
+        </div>
+      </div>
+      <div class="menu-credit">Built with Three.js · Touch-first · Landscape recommended</div>
+    </div>
+
+    <!-- ================= PAUSE ================= -->
+    <div id="pauseMenu" class="overlay hidden">
+      <div class="modal">
+        <h2>PAUSED</h2>
+        <button id="resumeBtn" class="play-btn small">RESUME</button>
+        <button id="restartBtn" class="ghost-btn">RESTART MATCH</button>
+        <button id="quitBtn" class="ghost-btn">QUIT TO MENU</button>
+      </div>
+    </div>
+
+    <!-- ================= RESULT ================= -->
+    <div id="result" class="overlay hidden">
+      <div class="modal result-modal">
+        <div class="result-kicker" id="resultKicker">FULL TIME</div>
+        <h2 id="resultTitle">BLUE WINS</h2>
+        <div class="result-score"><span id="resBlue">0</span><i>—</i><span id="resOrange">0</span></div>
+        <div class="result-stats" id="resultStats"></div>
+        <button id="rematchBtn" class="play-btn small">REMATCH</button>
+        <button id="menuBtn" class="ghost-btn">MAIN MENU</button>
+      </div>
+    </div>
+
+    <div id="rotate" class="rotate-overlay">
+      <div class="phone-icon">📱</div>
+      <h2>ROTATE YOUR DEVICE</h2>
+      <p>Rocket Rivals plays best in landscape.</p>
+    </div>
+
+    <div id="loading" class="loading">
+      <div class="loading-logo">ROCKET<span>RIVALS</span></div>
+      <div class="loading-bar"><i></i></div>
+    </div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
